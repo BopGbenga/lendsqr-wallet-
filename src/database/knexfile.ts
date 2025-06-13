@@ -1,8 +1,7 @@
-require("dotenv").config;
-
 import type { Knex } from "knex";
+import dotenv from "dotenv";
 
-// dotenv.config();
+dotenv.config(); // ✅ fix: actually run the config
 
 const config: { [key: string]: Knex.Config } = {
   development: {
@@ -14,10 +13,9 @@ const config: { [key: string]: Knex.Config } = {
       database: process.env.DB_NAME,
       port: Number(process.env.DB_PORT),
     },
-
     migrations: {
       directory: "./src/database/migrations",
-      extension: "js",
+      extension: "js", // or "ts" if your migrations are in TS
     },
   },
 };
