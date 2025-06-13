@@ -24,3 +24,15 @@ export const fundWallet = async (
     res.status(500).json({ message: "server error", error });
   }
 };
+
+export const transferFundsController = async (req: Request, res: Response) => {
+  const { sender_id, receipient_id, amount } = req.body;
+
+  if (!sender_id || !receipient_id || !amount || amount < 0) {
+    res.status(400).json({ message: "invalid transfer input" });
+    return;
+  }
+  try {
+    const result = await walletRepo;
+  } catch (error) {}
+};
