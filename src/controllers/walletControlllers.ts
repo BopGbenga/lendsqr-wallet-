@@ -33,6 +33,27 @@ export const transferFundsController = async (req: Request, res: Response) => {
     return;
   }
   try {
-    const result = await walletRepo;
-  } catch (error) {}
+    const result = await walletRepo.transferFunds(
+      sender_id,
+      receipient_id,
+      amount
+    );
+    res.status(200).json({ message: "Transfer sucessful", data: result });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message || "Transfer failed" });
+  }
+};
+
+export const withdrawFundsController = async (req: Request, res: Response) => {
+  const { user_id, amount } = req.body;
+  if (!user_id || !amount || amount < 0) {
+    res.status(400).json({ message: "invalid withdraw input" });
+    return;
+  }
+  try {
+    const result = await walletRepo.WithdrawFunds(user_id, amount);
+    res.status(200).json({ message: "wtthdrawal successfull", data: result });
+  } catch (error: any) {
+    res.status(400).json({ message: error.message || "withdrawal failed" });
+  }
 };

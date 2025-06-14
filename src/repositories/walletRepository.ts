@@ -46,3 +46,19 @@ export const transferFunds = async (
     return { from: senderWallet.user_id, to: receipientWallet.user_id, amount };
   });
 };
+
+export const WithdrawFunds = async (userId: number, amount: number) => {
+  return await db.transaction(async (trx) => {
+    const wallet = await trx("wallets").where({ user_id: userId }).first();
+    if (!wallet) {
+      throw new Error("wallet not found ");
+    }
+    if (wallet.balance < amount) {
+      throw new Error("insufficient balance");
+    }
+    await trx("wallets")
+      .where({ user_id: userId })
+      .update({ balance: wallet.balance - amount });
+    return { user_id: wallet.user_id, Withdrawn: amount };
+  });
+};
