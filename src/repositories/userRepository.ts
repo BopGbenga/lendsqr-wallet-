@@ -3,6 +3,7 @@ import db from "../database/db";
 interface createUserInput {
   name: string;
   email: string;
+  bvn: number;
   password: string;
 }
 

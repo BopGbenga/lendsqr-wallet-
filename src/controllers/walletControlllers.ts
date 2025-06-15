@@ -20,6 +20,9 @@ export const fundWallet = async (
 
     const newBalance = wallet.balance + amount;
     await walletRepo.updateWalletBalance(user_id, newBalance);
+    res
+      .status(200)
+      .json({ message: "Wallet funded successfully", balance: newBalance });
   } catch (error) {
     res.status(500).json({ message: "server error", error });
   }

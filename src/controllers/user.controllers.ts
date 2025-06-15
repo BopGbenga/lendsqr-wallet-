@@ -1,14 +1,21 @@
 import { Request, Response } from "express";
 import * as userRepo from "../repositories/userRepository";
 import bcrypt from "bcrypt";
+import { isBlackListed } from "../utils/karmaChecks";
 
 export const registerUser = async (
   req: Request,
   res: Response
 ): Promise<void> => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, bvn, password } = req.body;
 
+    if (isBlackListed(bvn)) {
+      res
+        .status(403)
+        .json({ message: "User is blacklisted by karma. Registration denied" });
+      return;
+    }
     const existingUser = await userRepo.findUserByEmail(email);
     if (existingUser) {
       res.status(400).json({ message: "User already exists" });
@@ -20,6 +27,7 @@ export const registerUser = async (
     const newUser = await userRepo.createUser({
       name,
       email,
+      bvn,
       password: hashPassword,
     });
     res.status(201).json({
