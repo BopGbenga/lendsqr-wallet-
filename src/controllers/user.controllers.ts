@@ -30,6 +30,10 @@ export const registerUser = async (
       bvn,
       password: hashPassword,
     });
+
+    if (!name || !email || !bvn || !password) {
+      res.status(401).json({ message: "Input al fields" });
+    }
     res.status(201).json({
       message: "User created successfully",
       user: {
