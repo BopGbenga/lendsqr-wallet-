@@ -8,7 +8,8 @@ interface createUserInput {
 }
 
 export const createUser = async (data: createUserInput) => {
-  const [user] = await db("users").insert(data).returning("*");
+  const [id] = await db("users").insert(data);
+  const user = await db("users").where({ id }).first();
   return user;
 };
 
