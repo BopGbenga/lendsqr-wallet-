@@ -1,7 +1,7 @@
 import type { Knex } from "knex";
 import dotenv from "dotenv";
 
-dotenv.config(); // ✅ fix: actually run the config
+dotenv.config();
 
 const config: { [key: string]: Knex.Config } = {
   development: {
@@ -15,7 +15,7 @@ const config: { [key: string]: Knex.Config } = {
     },
     migrations: {
       directory: "./src/database/migrations",
-      extension: "js", // or "ts" if your migrations are in TS
+      extension: "js",
     },
   },
 };

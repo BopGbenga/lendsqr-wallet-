@@ -25,6 +25,7 @@ export const validateUser = async (
       "any.required": "Password is required.",
     }),
   });
+
   try {
     await schema.validateAsync(req.body, { abortEarly: false });
     next();

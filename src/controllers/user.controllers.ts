@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as userRepo from "../repositories/userRepository";
+import * as walletRepo from "../repositories/walletRepository";
 import bcrypt from "bcrypt";
 import { isBlackListed } from "../utils/karmaChecks";
 
@@ -9,13 +10,15 @@ export const registerUser = async (
 ): Promise<void> => {
   try {
     const { name, email, bvn, password } = req.body;
-
-    if (isBlackListed(bvn)) {
+    const bltd = await isBlackListed(bvn);
+    console.log({ bltd });
+    if (bltd) {
       res
         .status(403)
         .json({ message: "User is blacklisted by karma. Registration denied" });
       return;
     }
+
     const existingUser = await userRepo.findUserByEmail(email);
     if (existingUser) {
       res.status(400).json({ message: "User already exists" });
@@ -31,9 +34,8 @@ export const registerUser = async (
       password: hashPassword,
     });
 
-    if (!name || !email || !bvn || !password) {
-      res.status(401).json({ message: "Input al fields" });
-    }
+    const wallet = await walletRepo.createWallet({ user_id: newUser.id });
+
     res.status(201).json({
       message: "User created successfully",
       user: {
@@ -41,6 +43,7 @@ export const registerUser = async (
         name: newUser.name,
         email: newUser.email,
       },
+      wallet,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error });

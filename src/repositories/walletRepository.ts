@@ -16,34 +16,48 @@ export const updateWalletBalance = async (user_id: number, amount: number) => {
 
 export const transferFunds = async (
   sender_id: number,
-  receipient_id_: number,
+  recipient_id: number,
   amount: number
 ) => {
   return await db.transaction(async (trx) => {
     const senderWallet = await trx("wallets")
       .where({ user_id: sender_id })
       .first();
-    const receipientWallet = await trx("wallets")
-      .where({
-        user_id: receipient_id_,
-      })
+
+    const recipientWallet = await trx("wallets")
+      .where({ user_id: recipient_id })
       .first();
 
-    if (!senderWallet || !receipientWallet) {
-      throw new Error("one or both wallets not found");
+    if (!senderWallet || !recipientWallet) {
+      throw new Error("One or both wallets not found");
     }
-    if (senderWallet.balance < amount) {
-      throw new Error("insufficnent balalnce ");
+
+    const senderBalance = parseFloat(senderWallet.balance);
+    const recipientBalance = parseFloat(recipientWallet.balance);
+    const transferAmount = amount;
+
+    if (senderBalance < transferAmount) {
+      throw new Error("Insufficient balance");
     }
+
+    const newSenderBalance = senderBalance - transferAmount;
+    const newRecipientBalance = recipientBalance + transferAmount;
+
     await trx("wallets")
       .where({ user_id: sender_id })
-      .update({ balance: senderWallet.balalnce - amount });
+      .update({ balance: newSenderBalance });
 
-    await trx("walets")
-      .where({ user_id: receipient_id_ })
-      .update({ balance: receipientWallet.balance + amount });
+    await trx("wallets")
+      .where({ user_id: recipient_id })
+      .update({ balance: newRecipientBalance });
 
-    return { from: senderWallet.user_id, to: receipientWallet.user_id, amount };
+    return {
+      from: senderWallet.user_id,
+      to: recipientWallet.user_id,
+      amount: transferAmount,
+      sender_new_balance: newSenderBalance,
+      recipient_new_balance: newRecipientBalance,
+    };
   });
 };
 

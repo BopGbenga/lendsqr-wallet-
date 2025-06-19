@@ -17,3 +17,8 @@ export const findUserByEmail = async (email: string) => {
   const user = await db("users").where({ email }).first();
   return user;
 };
+
+export const findUserById = async (id: number) => {
+  const result = await db("users").where("id", id).first();
+  return result || null;
+};

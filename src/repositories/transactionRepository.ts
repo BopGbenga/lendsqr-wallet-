@@ -2,7 +2,8 @@ import db from "../database/db";
 
 export interface Transaction {
   id?: number;
-  user_id: number;
+  sender_id: number;
+  receiver_id: number;
   type: "FUND" | "WITHDRAW" | "TRANSFER";
   amount: number;
   status: "SUCCESS" | "FAILED" | "PENDING";
@@ -19,5 +20,8 @@ export const createTransaction = async (
 export const getUserTransactions = async (
   user_id: number
 ): Promise<Transaction[]> => {
-  return db("transactions").where({ user_id }).orderBy("created_at", "desc");
+  return db("transactions")
+    .where("sender_id", user_id)
+    .orWhere("receiver_id", user_id)
+    .orderBy("created_at", "desc");
 };

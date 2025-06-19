@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as walletRepo from "../repositories/walletRepository";
+import * as transactionRepo from "../repositories/transactionRepository";
 
 export const fundWallet = async (
   req: Request,
@@ -7,10 +8,13 @@ export const fundWallet = async (
 ): Promise<void> => {
   const { user_id, amount } = req.body;
 
+  console.log("📥 Received amount:", amount, "Type:", typeof amount);
+
   if (!amount || amount < 0) {
     res.status(400).json({ message: "Amount must be greater than 0" });
     return;
   }
+
   try {
     const wallet = await walletRepo.fundWalletByUserId(user_id);
     if (!wallet) {
@@ -18,12 +22,28 @@ export const fundWallet = async (
       return;
     }
 
-    const newBalance = wallet.balance + amount;
+    console.log(
+      "💰 Current wallet balance:",
+      wallet.balance,
+      "Type:",
+      typeof wallet.balance
+    );
+
+    const currentBalance = parseFloat(wallet.balance); 
+    const newBalance = currentBalance + amount;
+
+    console.log("🧮 Calculated new balance:", newBalance);
+
     await walletRepo.updateWalletBalance(user_id, newBalance);
+
     res
       .status(200)
-      .json({ message: "Wallet funded successfully", balance: newBalance });
+      .json({
+        message: "Wallet funded successfully",
+        balance: newBalance.toFixed(2),
+      });
   } catch (error) {
+    console.log("❌ Error:", error);
     res.status(500).json({ message: "server error", error });
   }
 };
@@ -35,12 +55,25 @@ export const transferFundsController = async (req: Request, res: Response) => {
     res.status(400).json({ message: "invalid transfer input" });
     return;
   }
+
   try {
     const result = await walletRepo.transferFunds(
       sender_id,
       receipient_id,
       amount
     );
+
+    console.log("✅ Transfer completed, now creating transaction record...");
+
+    const transaction = await transactionRepo.createTransaction({
+      sender_id,
+      receiver_id: receipient_id,
+      amount,
+      type: "TRANSFER",
+      status: "SUCCESS",
+    });
+    console.log("✅ Transaction created:", transaction);
+
     res.status(200).json({ message: "Transfer sucessful", data: result });
   } catch (error: any) {
     res.status(400).json({ message: error.message || "Transfer failed" });
