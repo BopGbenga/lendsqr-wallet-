@@ -5,9 +5,9 @@ import db, { testConnection } from "./database/db";
 import userRoute from "./routes/userRoutes";
 import transactionRoute from "./routes/transactionRoutes";
 import walletRoute from "./routes/walletRoutes";
+import { errorMiddleware } from "./middeware/errormiddleware";
 
 const app = express();
-const PORT = process.env.PORT || 2000;
 
 app.use(express.json());
 
@@ -16,21 +16,9 @@ app.use("/transaction", transactionRoute);
 app.use("/wallet", walletRoute);
 
 app.get("/", (req, res) => {
-  res.send("Lendsqr Wallet Service is running 🚀");
+  res.send("Lendsqr Wallet Service is running");
 });
 
-const startServer = async () => {
-  try {
-    await testConnection();
-    app.listen(PORT, () => {
-      console.log(`Server started on http://localhost:${PORT}`);
-    });
-  } catch (err) {
-    console.error("❌ Failed to connect to DB. Server not started.");
-    process.exit(1);
-  }
-};
-
-startServer();
+app.use(errorMiddleware);
 
 export default app;

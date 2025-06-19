@@ -10,9 +10,9 @@ const db = knex(config[environment]);
 export const testConnection = async () => {
   try {
     await db.raw("SELECT 1");
-    console.log("✅ Database connected successfully");
+    console.log("Database connected successfully");
   } catch (err) {
-    console.error("❌ Database connection failed:", err);
+    console.error("Database connection failed:", err);
     throw err;
   }
 };
