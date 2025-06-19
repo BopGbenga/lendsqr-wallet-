@@ -6,5 +6,5 @@ const tsJestTransformCfg = createDefaultPreset().transform;
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "node",
-  testPathIgnorePatterns: ["/dist/"], // <-- ignore compiled JS files
+  testPathIgnorePatterns: ["/dist/"],
 };

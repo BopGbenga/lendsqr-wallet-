@@ -1,4 +1,6 @@
-# Lendsqr Wallet Service - Backend API
+# 💼 Lendsqr Wallet Service - Backend API
+
+This is a backend wallet service built with:
 
 - Node.js (LTS)
 - TypeScript
@@ -7,32 +9,38 @@
 - MySQL
 - Jest (for testing)
 
-Getting Started
+---
 
-To get started with the lendsqr wallet service follow these steps
+## 🚀 Getting Started
 
-# Clone repo
+To get started with the Lendsqr Wallet Service, follow these steps:
 
-- git clone https://github.com/yourusername/lendsqr-wallet-.git
-  cd lendsqr-wallet-service
+### 🔁 Clone the repository
 
-# Install dependencies
+```bash
+git clone https://github.com/yourusername/lendsqr-wallet-service.git
+cd lendsqr-wallet-service
 
-- npm install
 
-# Setup environment
+```
 
-- configure the environment from the env
+## Install dependencies
 
-# Run migrations
+npm install
 
-- npx knex migrate:latest
+## Set up environment variables
 
-# Start the server
+Create a .env file using .env.example as a guide and configure the values.
 
-- npm start
+## Run database migrations
 
-Project Folder Structure
+npx knex migrate:latest
+
+## Start the development server
+
+npm start
+
+## Project Folder Structure
 
 src/
 ├── **tests**/
@@ -46,10 +54,46 @@ src/
 ├── routes/
 ├── utils/
 
-## RUNNING TEST
+## unning Tests
 
 npm run test
 
-## ER DIAGRAM LINK
-
+ER Diagram
 https://drawsql.app/teams/oluwagbenga/diagrams/lendsrq-wallet
+
+### 🔍 Separation of Concerns
+
+The application is organized using a layered architecture:
+
+- **Controllers**: Handle HTTP requests and responses.
+- **Repositories**: Encapsulate all database logic using Knex.js for flexibility and maintainability.
+- **Middlewares**: Include faux authentication and potential error handling.
+- **Utils**: Contains helper functions like integration with the Adjutor Karma API.
+
+### 🔐 Faux Authentication
+
+Since real authentication was not required, I implemented a simple middleware to simulate user identity via a token or request header.
+
+### 🧾 Use of Transactions
+
+For operations like transfers and withdrawals, transactions are handled using Knex’s `.transaction()` block to ensure data consistency, especially when updating multiple records.
+
+### 🚫 Karma Blacklist Check
+
+Before creating a user, a real-time check is done using the **Lendsqr Adjutor Karma API** to prevent blacklisted users from registering.
+
+### 🧪 Testing
+
+Unit tests were written using **Jest** to cover:
+
+- Positive flows (e.g. wallet funding, transfers)
+- Negative cases (e.g. blacklisted users, insufficient funds)
+
+Coverage was prioritized on **controllers**, with plans to expand into **repositories** and **utils**.
+
+### 💾 Database Design
+
+The schema was designed with normalization in mind:
+
+- **Users** are linked one-to-one with **wallets**
+- **Transactions** log all fund movements, including transfer types
