@@ -15,7 +15,7 @@ async function adjutorBlacklisted(bvn: string) {
     const target = (users as { bvn: string; blacklisted: number }[]).find(
       (u) => u.bvn == bvn && !!u.blacklisted
     );
-    console.log({ target });
+
     return !!target;
   } catch (err) {
     throw err;
@@ -37,7 +37,6 @@ const getAdjutaUsers = async () => {
 
 const loadFallBackData = () => {
   const filePath = path.join(process.cwd(), "src/data/ajuta_users.json");
-  console.log({ filePath });
   const fileRaw = fs.readFileSync(filePath, "utf-8");
   const parsed = JSON.parse(fileRaw);
   return parsed;

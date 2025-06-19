@@ -8,8 +8,6 @@ export const fundWallet = async (
 ): Promise<void> => {
   const { user_id, amount } = req.body;
 
-  console.log("📥 Received amount:", amount, "Type:", typeof amount);
-
   if (!amount || amount < 0) {
     res.status(400).json({ message: "Amount must be greater than 0" });
     return;
@@ -22,28 +20,17 @@ export const fundWallet = async (
       return;
     }
 
-    console.log(
-      "💰 Current wallet balance:",
-      wallet.balance,
-      "Type:",
-      typeof wallet.balance
-    );
-
-    const currentBalance = parseFloat(wallet.balance); 
+    const currentBalance = parseFloat(wallet.balance);
     const newBalance = currentBalance + amount;
-
-    console.log("🧮 Calculated new balance:", newBalance);
 
     await walletRepo.updateWalletBalance(user_id, newBalance);
 
-    res
-      .status(200)
-      .json({
-        message: "Wallet funded successfully",
-        balance: newBalance.toFixed(2),
-      });
+    res.status(200).json({
+      message: "Wallet funded successfully",
+      balance: newBalance.toFixed(2),
+    });
   } catch (error) {
-    console.log("❌ Error:", error);
+    console.log("Error:", error);
     res.status(500).json({ message: "server error", error });
   }
 };
@@ -63,8 +50,6 @@ export const transferFundsController = async (req: Request, res: Response) => {
       amount
     );
 
-    console.log("✅ Transfer completed, now creating transaction record...");
-
     const transaction = await transactionRepo.createTransaction({
       sender_id,
       receiver_id: receipient_id,
@@ -72,7 +57,6 @@ export const transferFundsController = async (req: Request, res: Response) => {
       type: "TRANSFER",
       status: "SUCCESS",
     });
-    console.log("✅ Transaction created:", transaction);
 
     res.status(200).json({ message: "Transfer sucessful", data: result });
   } catch (error: any) {

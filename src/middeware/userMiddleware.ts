@@ -41,3 +41,32 @@ export const validateUser = async (
     });
   }
 };
+
+export const validateLogin = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const userSchema = joi.object({
+      email: joi.string().email().required().messages({
+        "string.email": "provide a vaild email ",
+        "any.required": "email is required",
+        "string.empty": "email cannot be emoty",
+      }),
+      password: joi.string().required().messages({
+        "any.required": "password is required",
+        "string.empty": "password canoot be empty",
+      }),
+    });
+    await userSchema.validateAsync(req.body, { abortEarly: false });
+    next();
+  } catch (error: any) {
+    res.status(422).json({
+      message: "validation failed",
+      success: false,
+      error: error.details ? error.details[0].message : error.message,
+    });
+    return;
+  }
+};

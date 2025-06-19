@@ -9,7 +9,6 @@ interface JWTPayload {
   userId: string;
   email: string;
 }
-
 export const registerUser = async (
   req: Request,
   res: Response
@@ -24,7 +23,7 @@ export const registerUser = async (
     }
 
     const bltd = await isBlackListed(bvn);
-    console.log({ bltd });
+
     if (bltd) {
       res
         .status(403)
