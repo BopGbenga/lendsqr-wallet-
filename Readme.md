@@ -65,24 +65,21 @@ https://drawsql.app/teams/oluwagbenga/diagrams/lendsrq-wallet
 
 The application is organized using a layered architecture:
 
-- **Controllers**: Handle HTTP requests and responses.
+- **Controllers**: Handle HTTP requests and send appropriate responses.
 - **Repositories**: Encapsulate all database logic using Knex.js for flexibility and maintainability.
-- **Middlewares**: Include faux authentication and potential error handling.
+- **Middlewares**: Include JWT authentication and Joi validation to handle access control and input validation across routes.
 - **Utils**: Contains helper functions like integration with the Adjutor Karma API.
+- **routes**:Routes: Define and organize all application endpoints, grouped by functionality.
 
-### 🔐 Faux Authentication
+### Faux Authentication
 
-Since real authentication was not required, I implemented a simple middleware to simulate user identity via a token or request header.
+A simple middleware simulates user identity using a token in the request header.
 
-### 🧾 Use of Transactions
-
-For operations like transfers and withdrawals, transactions are handled using Knex’s `.transaction()` block to ensure data consistency, especially when updating multiple records.
-
-### 🚫 Karma Blacklist Check
+### Karma Blacklist Check
 
 Before creating a user, a real-time check is done using the **Lendsqr Adjutor Karma API** to prevent blacklisted users from registering.
 
-### 🧪 Testing
+### Testing
 
 Unit tests were written using **Jest** to cover:
 
@@ -91,7 +88,7 @@ Unit tests were written using **Jest** to cover:
 
 Coverage was prioritized on **controllers**, with plans to expand into **repositories** and **utils**.
 
-### 💾 Database Design
+### Database Design
 
 The schema was designed with normalization in mind:
 
