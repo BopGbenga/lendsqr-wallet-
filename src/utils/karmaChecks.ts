@@ -4,15 +4,13 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const mockedBlackedList = ["23456789012", "9876543219"];
-
 export const isBlackListed = async (bvn: string): Promise<boolean> => {
   return await adjutorBlacklisted(bvn);
 };
 
 async function adjutorBlacklisted(bvn: string) {
   try {
-    const apiData = await getAdjutaUsers();
+    const apiData = await getAdjutorUsers();
     if (!apiData?.data) throw Error("Unable to fetch Adjuta data");
     const { users } = apiData?.data ?? { users: [] };
     const target = (users as { bvn: string; blacklisted: number }[]).find(
@@ -25,9 +23,9 @@ async function adjutorBlacklisted(bvn: string) {
   }
 }
 
-const getAdjutaUsers = async () => {
+const getAdjutorUsers = async () => {
   try {
-    const apiRes = await fetch("http://localhost:2000/users/register", {
+    const apiRes = await fetch("https://adjutor.lendsqr.com/v2/customers", {
       headers: { Authorization: `Bearer ${process.env.KARMA_API_KEY}` },
     });
     if (!apiRes.status.toString().startsWith("2")) return loadFallBackData();

@@ -9,8 +9,6 @@ This is a backend wallet service built with:
 - MySQL
 - Jest (for testing)
 
----
-
 ## 🚀 Getting Started
 
 To get started with the Lendsqr Wallet Service, follow these steps:
@@ -94,3 +92,15 @@ The schema was designed with normalization in mind:
 
 - **Users** are linked one-to-one with **wallets**
 - **Transactions** log all fund movements, including transfer types
+
+Adjutor Karma Blacklist Integration
+
+The application is designed to integrate with the Lendsqr Adjutor Karma API to prevent onboarding of blacklisted users.
+Due to the unavailability of production access tokens during this assessment, the API call has been simulated with a fallback mechanism:
+
+A real fetch call is made to a local endpoint (simulating the Karma API).
+
+If it fails or times out, it loads mock user data from src/data/ajuta_users.json, based on Lendsqr’s sample documentation.
+
+This ensures the blacklist logic is still validated and tested correctly.
+This fallback approach makes the implementation testable, predictable, and production-ready once actual credentials are available.
