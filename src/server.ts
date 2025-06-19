@@ -9,8 +9,6 @@ const startServer = async () => {
 
     // ✅ Run migrations on server start
     await db.migrate.latest();
-    console.log("Migrations completed ✅");
-
     app.listen(PORT, () => {
       console.log(`Server started on http://localhost:${PORT}`);
     });
