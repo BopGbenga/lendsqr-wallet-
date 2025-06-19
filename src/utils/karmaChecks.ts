@@ -37,7 +37,7 @@ const getAdjutorUsers = async () => {
 };
 
 const loadFallBackData = () => {
-  const filePath = path.join(process.cwd(), "src/data/ajuta_users.json");
+  const filePath = path.join(process.cwd(), "src/data/adjutor_users.json");
   const fileRaw = fs.readFileSync(filePath, "utf-8");
   const parsed = JSON.parse(fileRaw);
   return parsed;

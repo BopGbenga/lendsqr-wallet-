@@ -17,7 +17,7 @@
         "timezone": "Africa/Lagos",
         "email": "exampleuser@gmail.com",
         "email_verified": 0,
-        "bvn": "22*******98",
+        "bvn": "2256374798",
         "id_document_id": null,
         "bvn_phone_number": "08169654518",
         "bvn_validation_count": 0,
@@ -42,7 +42,7 @@
         "activated": 1,
         "activated_on": null,
         "last_login_date": "2024-08-10T23:07:48.000Z",
-        "blacklisted": 0,
+        "blacklisted": 1,
         "reason": null,
         "created_on": "2024-08-10T23:07:48.000Z"
       },

@@ -1,4 +1,3 @@
-
 jest.mock("../database/db", () => ({
   default: {
     select: jest.fn().mockReturnThis(),
@@ -82,7 +81,7 @@ describe("registerUser Controller", () => {
       expect(mockUserRepo.findUserByEmail).toHaveBeenCalledWith(
         "john@example.com"
       );
-      expect(mockBcrypt.hash).toHaveBeenCalledWith("password123", 10);
+      expect(mockBcrypt.hash).toHaveBeenCalledWith("password123", 12);
       expect(mockUserRepo.createUser).toHaveBeenCalledWith({
         name: "John Doe",
         email: "john@example.com",
@@ -99,6 +98,7 @@ describe("registerUser Controller", () => {
           email: "john@example.com",
         },
         wallet: mockWallet,
+        token: expect.any(String),
       });
     });
   });

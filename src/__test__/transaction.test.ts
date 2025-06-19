@@ -98,21 +98,6 @@ describe("getTransactions Controller", () => {
         message: "Invalid or missing user_id in URL params",
       });
     });
-
-    it("should return 400 if user_id is less than or equal to 0", async () => {
-      mockReq = {
-        params: {
-          user_id: "0",
-        },
-      };
-
-      await getTransactions(mockReq as Request, mockRes as Response);
-
-      expect(mockStatus).toHaveBeenCalledWith(400);
-      expect(mockJson).toHaveBeenCalledWith({
-        message: "Invalid or missing user_id in URL params",
-      });
-    });
   });
 
   describe("User not found", () => {

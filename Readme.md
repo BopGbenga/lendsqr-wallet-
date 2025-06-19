@@ -1,106 +1,175 @@
-# 💼 Lendsqr Wallet Service - Backend API
+# Lendsqr Wallet Service – Backend API
 
-This is a backend wallet service built with:
+This is a backend wallet service built as part of a technical assessment, simulating core digital wallet functionalities such as user registration, authentication, funding, withdrawal, transfer, and transaction history.
 
-- Node.js (LTS)
-- TypeScript
-- Express
-- Knex.js (ORM)
-- MySQL
-- Jest (for testing)
+---
+
+### Tech Stack
+
+- **Node.js**
+- **TypeScript**
+- **Express.js**
+- **Knex.js** (SQL Query Builder)
+- **MySQL**
+- **Jest** (Unit Testing)
+
+---
 
 ## 🚀 Getting Started
 
-To get started with the Lendsqr Wallet Service, follow these steps:
-
-### 🔁 Clone the repository
+### 🔁 Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/lendsqr-wallet-service.git
 cd lendsqr-wallet-service
-
-
 ```
 
-## Install dependencies
+### 📦 Install Dependencies
 
+```bash
 npm install
+```
 
-## Set up environment variables
+### ⚙️ Set Up Environment Variables
 
-Create a .env file using .env.example as a guide and configure the values.
+Create a `.env` file using `.env.example` as a reference and fill in the required values
 
-## Run database migrations
+### 🧱 Run Migrations
 
+```bash
 npx knex migrate:latest
+```
 
-## Start the development server
+### ▶️ Start Development Server
 
-npm start
+```bash
+npm run dev
+```
 
-## Project Folder Structure
+---
 
-src/
-├── **tests**/
+## 🗂️ Project Structure
+
+```
 ├── config/
 ├── controllers/
 ├── database/
-│ ├── migrations/
-│ └── seeds/
+├── data/
 ├── middlewares/
 ├── repositories/
 ├── routes/
+├── tests/
 ├── utils/
+```
 
-## unning Tests
+---
 
+## Architecture Overview
+
+### Entry Points
+
+- **`app.ts`**: Configures the app by registering routes, middlewares, and global error handlers. Exports the app instance.
+- **`server.ts`**: Starts the Express server, connects to the database, and listens on the specified port.
+
+---
+
+## ✅ Validation Middlewares
+
+The app uses **Joi** for schema validation.
+
+- `validateUser`: Ensures name, email, password, and BVN are present and valid during registration.
+- `validateLogin`: Validates email and password for login.
+
+If validation fails, a structured error response (`422 Unprocessable Entity`) is returned.
+
+---
+
+## 🔒 Authentication
+
+A **faux JWT-based middleware** is used to simulate authentication by extracting and verifying a token in the `Authorization` header.
+
+---
+
+## 🚫 Karma Blacklist Integration
+
+Before user creation, the BVN is checked against the **Lendsqr Adjutor Karma API**.
+
+Since real access was not provided, the integration uses:
+
+- A simulated `fetch` call to a local endpoint.
+- Fallback to mock data stored in `src/data/ajutor_users.json`.
+
+This ensures the blacklist logic works and is testable.
+
+---
+
+## Repository Pattern
+
+### User Repository
+
+- `createUser(data)`
+- `findUserByEmail(email)`
+- `findUserById(id)`
+
+### Wallet Repository
+
+- `createWallet({ user_id, balance })`
+- `fundWalletByUserId(user_id)`
+- `updateWalletBalance(user_id, amount)`
+- `transferFunds(sender_id, recipient_id, amount)`
+- `withdrawFunds(user_id, amount)`
+
+### 💳 Transaction Repository
+
+- `createTransaction(data)`
+- `getUserTransactions(user_id)`
+
+Records all transaction types (`FUND`, `WITHDRAW`, `TRANSFER`) with appropriate status and timestamps.
+
+---
+
+## 🌐 API Routes
+
+### **User Routes** (`/users`)
+
+- `POST /register`: Register a new user
+- `POST /login`: Log in and receive a token
+
+### **Wallet Routes** (`/wallet`)
+
+- `POST /fund`: Fund your wallet
+- `POST /transfer`: Transfer funds to another user
+- `POST /withdraw`: Withdraw from your wallet
+- `GET /balance`: View current wallet balance
+
+### **Transaction Routes** (`/transactions`)
+
+- `GET /:user_id`: Fetch all user's transactions
+
+---
+
+## 🧪 Testing
+
+Run all unit tests using:
+
+```bash
 npm run test
+```
 
-ER Diagram
-https://drawsql.app/teams/oluwagbenga/diagrams/lendsrq-wallet
+Tests cover:
 
-### 🔍 Separation of Concerns
+- User registration & login
+- Wallet funding, transfer, and withdrawal
+- Edge cases (e.g., blacklisted users, insufficient balance)
 
-The application is organized using a layered architecture:
+---
 
-- **Controllers**: Handle HTTP requests and send appropriate responses.
-- **Repositories**: Encapsulate all database logic using Knex.js for flexibility and maintainability.
-- **Middlewares**: Include JWT authentication and Joi validation to handle access control and input validation across routes.
-- **Utils**: Contains helper functions like integration with the Adjutor Karma API.
-- **routes**:Routes: Define and organize all application endpoints, grouped by functionality.
+## 🧾 ER Diagram
 
-### Faux Authentication
+You can view the database schema here:
+[Lendsqr Wallet Schema on DrawSQL](https://drawsql.app/teams/oluwagbenga/diagrams/lendsrq-wallet)
 
-A simple middleware simulates user identity using a token in the request header.
+## 📁 Data Folder
 
-### Karma Blacklist Check
-
-Before creating a user, a real-time check is done using the **Lendsqr Adjutor Karma API** to prevent blacklisted users from registering.
-
-### Testing
-
-Unit tests were written using **Jest** to cover:
-
-- Positive flows (e.g. wallet funding, transfers)
-- Negative cases (e.g. blacklisted users, insufficient funds)
-
-Coverage was prioritized on **controllers**, with plans to expand into **repositories** and **utils**.
-
-### Database Design
-
-The schema was designed with normalization in mind:
-
-- **Users** are linked one-to-one with **wallets**
-- **Transactions** log all fund movements, including transfer types
-
-Adjutor Karma Blacklist Integration
-
-The application is designed to integrate with the Lendsqr Adjutor Karma API to prevent onboarding of blacklisted users.
-Due to the unavailability of production access tokens during this assessment, the API call has been simulated with a fallback mechanism:
-
-A real fetch call is made to a local endpoint (simulating the Karma API).
-
-If it fails or times out, it loads mock user data from src/data/ajuta_users.json, based on Lendsqr’s sample documentation.
-
-This ensures the blacklist logic is still validated and tested correctly.
-This fallback approach makes the implementation testable, predictable, and production-ready once actual credentials are available.
+The `/data` folder contains mocked data used when Karma API fallback is triggered.
+This ensures your service remains functional and testable in offline mode.
