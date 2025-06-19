@@ -56,6 +56,7 @@ export const registerUser = async (
         expiresIn: "8h",
       }
     );
+    console.log("JWT_SECRET:", process.env.JWT_SECRET);
 
     const wallet = await walletRepo.createWallet({ user_id: newUser.id });
 
