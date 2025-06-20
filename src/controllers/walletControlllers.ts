@@ -36,33 +36,36 @@ export const fundWallet = async (
 };
 
 export const transferFundsController = async (req: Request, res: Response) => {
-  const { sender_id, receipient_id, amount } = req.body;
+  const { sender_id, recipient_id, amount } = req.body;
 
-  if (!sender_id || !receipient_id || !amount || amount < 0) {
+  if (!sender_id || !recipient_id || !amount || amount < 0) {
     res.status(400).json({ message: "invalid transfer input" });
     return;
   }
 
+  console.log(sender_id, recipient_id, amount);
+
   try {
     const result = await walletRepo.transferFunds(
       sender_id,
-      receipient_id,
+      recipient_id,
       amount
     );
 
     const transaction = await transactionRepo.createTransaction({
       sender_id,
-      receiver_id: receipient_id,
+      receiver_id: recipient_id,
       amount,
       type: "TRANSFER",
       status: "SUCCESS",
     });
 
-    res.status(200).json({ message: "Transfer sucessful", data: result });
+    res.status(200).json({ message: "Transfer successful", data: result });
   } catch (error: any) {
     res.status(400).json({ message: error.message || "Transfer failed" });
   }
 };
+
 
 export const withdrawFundsController = async (req: Request, res: Response) => {
   const { user_id, amount } = req.body;
