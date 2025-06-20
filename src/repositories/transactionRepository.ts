@@ -13,8 +13,10 @@ export interface Transaction {
 export const createTransaction = async (
   data: Transaction
 ): Promise<Transaction> => {
-  const [created] = await db("transactions").insert(data).returning("*");
+  const [insertedId] = await db("transactions").insert(data);
+  const created = await db("transactions").where("id", insertedId).first();
   return created;
+  
 };
 
 export const getUserTransactions = async (
